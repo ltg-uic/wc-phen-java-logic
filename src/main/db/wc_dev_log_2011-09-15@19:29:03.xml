@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wc_dev> 
+  <windows> 
+    <win id="hr_dev_w1" type="client" wall="n" x="3" y="3"/>  
+    <win id="hr_dev_w2" type="client" wall="e" x="3" y="3"/>  
+    <win id="hr_dev_w3" type="client" wall="s" x="3" y="3"/>  
+    <win id="hr_dev_w4" type="client" wall="w" x="3" y="3"/>  
+    <win id="wc_dev_micro1" type="micro"/>  
+    <win id="wc_dev_micro2" type="micro"/>  
+    <win id="wc_dev_cp" type="control"/>  
+    <win id="wc_dev_notification" type="notifier"/> 
+  </windows>  
+  <config> 
+    <startTime>1306244459</startTime>  
+    <species> 
+      <creature name="greenScum"> 
+        <idealTemperature>10.0</idealTemperature>  
+        <idealHumidity>10</idealHumidity>  
+        <idealLight>10.0</idealLight>  
+        <eats> 
+          <food id="fluffyMold"/> 
+        </eats>  
+        <movingSpeed> 
+          <dueToTemperature>2.0</dueToTemperature>  
+          <dueToHumidity>2.0</dueToHumidity>  
+          <dueToLight>2.0</dueToLight>  
+          <dueToPredators>3.0</dueToPredators>  
+          <dueToNoFood>1.0</dueToNoFood> 
+        </movingSpeed> 
+      </creature> 
+    </species>  
+    <walls> 
+      <wall id="n" width="10" height="10"> 
+        <adjacency> 
+          <adjacentWall>w</adjacentWall>  
+          <adjacentWall>e</adjacentWall> 
+        </adjacency>  
+        <environment> 
+          <temperature>20.0</temperature>  
+          <humidity>50.0</humidity>  
+          <light>20.0</light> 
+        </environment>  
+        <population> 
+          <blueBug_s2>11</blueBug_s2>  
+          <blueBug_s3>8</blueBug_s3>  
+          <blueBug_s4>12</blueBug_s4>  
+          <fuzzPredator>50</fuzzPredator>  
+          <blueBug_s1>9</blueBug_s1>  
+          <greenBug_s2>16</greenBug_s2>  
+          <greenScum>10</greenScum>  
+          <greenBug_s1>14</greenBug_s1>  
+          <fluffyMold>20</fluffyMold> 
+        </population> 
+      </wall>  
+      <wall id="e" width="10" height="10"> 
+        <adjacency> 
+          <adjacentWall>n</adjacentWall>  
+          <adjacentWall>s</adjacentWall> 
+        </adjacency>  
+        <environment> 
+          <temperature>20.0</temperature>  
+          <humidity>50.0</humidity>  
+          <light>20.0</light> 
+        </environment>  
+        <population> 
+          <blueBug_s2>11</blueBug_s2>  
+          <blueBug_s3>8</blueBug_s3>  
+          <blueBug_s4>12</blueBug_s4>  
+          <fuzzPredator>50</fuzzPredator>  
+          <blueBug_s1>9</blueBug_s1>  
+          <greenBug_s2>16</greenBug_s2>  
+          <greenScum>10</greenScum>  
+          <greenBug_s1>14</greenBug_s1>  
+          <fluffyMold>20</fluffyMold> 
+        </population> 
+      </wall>  
+      <wall id="s" width="10" height="10"> 
+        <adjacency> 
+          <adjacentWall>e</adjacentWall>  
+          <adjacentWall>w</adjacentWall> 
+        </adjacency>  
+        <environment> 
+          <temperature>20.0</temperature>  
+          <humidity>50.0</humidity>  
+          <light>20.0</light> 
+        </environment>  
+        <population> 
+          <blueBug_s2>11</blueBug_s2>  
+          <blueBug_s3>8</blueBug_s3>  
+          <blueBug_s4>12</blueBug_s4>  
+          <fuzzPredator>50</fuzzPredator>  
+          <blueBug_s1>9</blueBug_s1>  
+          <greenBug_s2>16</greenBug_s2>  
+          <greenScum>10</greenScum>  
+          <greenBug_s1>14</greenBug_s1>  
+          <fluffyMold>20</fluffyMold> 
+        </population> 
+      </wall>  
+      <wall id="w" width="10" height="10"> 
+        <adjacency> 
+          <adjacentWall>s</adjacentWall>  
+          <adjacentWall>n</adjacentWall> 
+        </adjacency>  
+        <environment> 
+          <temperature>20.0</temperature>  
+          <humidity>50.0</humidity>  
+          <light>20.0</light> 
+        </environment>  
+        <population> 
+          <blueBug_s2>11</blueBug_s2>  
+          <blueBug_s3>8</blueBug_s3>  
+          <blueBug_s4>12</blueBug_s4>  
+          <fuzzPredator>50</fuzzPredator>  
+          <blueBug_s1>9</blueBug_s1>  
+          <greenBug_s2>16</greenBug_s2>  
+          <greenScum>10</greenScum>  
+          <greenBug_s1>14</greenBug_s1>  
+          <fluffyMold>20</fluffyMold> 
+        </population> 
+      </wall> 
+    </walls>  
+    <tagged> 
+      <bug species="greenScum" color="FF0000" curWall="n" curX="3" curY="3"/> 
+    </tagged>  
+    <microworlds> 
+      <wall id="micro1"> 
+        <environment> 
+          <temperature>20.0</temperature>  
+          <humidity>50.0</humidity>  
+          <light>20.0</light> 
+        </environment>  
+        <population> 
+          <blueBug_s2>11</blueBug_s2>  
+          <blueBug_s3>8</blueBug_s3>  
+          <blueBug_s4>12</blueBug_s4>  
+          <fuzzPredator>50</fuzzPredator>  
+          <blueBug_s1>9</blueBug_s1>  
+          <greenBug_s2>16</greenBug_s2>  
+          <greenScum>10</greenScum>  
+          <greenBug_s1>14</greenBug_s1>  
+          <fluffyMold>20</fluffyMold> 
+        </population> 
+      </wall> 
+    </microworlds> 
+  </config> 
+</wc_dev>

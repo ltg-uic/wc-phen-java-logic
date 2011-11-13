@@ -8,7 +8,7 @@ classification of species, habitat selection, population estimation, food
 chains, predator-prey relationships, life cycle phases, adaptation, and response 
 to environmental change.
 
-Check the [http://phenomena.evl.uic.edu/wiki project Wiki] for more information.
+Check the [project Wiki](http://phenomena.evl.uic.edu/wiki) for more information.
 
 
 ## CURRENT VERSION

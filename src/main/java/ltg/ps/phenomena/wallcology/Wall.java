@@ -211,7 +211,7 @@ public class Wall {
 		// Fuzz predator
 		s1 = 0; s2 = 0;
 		for(int i=0; i<ca[4]; i++) {
-			switch ((int)Math.random()*2) {
+			switch ((int)(Math.random()*2)) {
 			case 0:
 				s1++;
 				break;

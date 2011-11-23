@@ -14,7 +14,7 @@ import java.util.Set;
 
 import ltg.ps.api.phenomena.ActivePhenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
-import ltg.ps.phenomena.wallcology.model.DBCalculator;
+import ltg.ps.phenomena.wallcology.population_calculators.DBCalculator;
 import ltg.ps.phenomena.wallcology.support.WallcologyPersistence;
 
 import org.dom4j.Document;
@@ -257,7 +257,8 @@ public class Wallcology extends ActivePhenomena {
 		// Update population...
 		if (prevPhase==null && nextPhase==null) {
 			//...stable 
-			pc.updateStableEnvironment(currentPhaseWalls, currentPhase);
+			//pc.updateStableEnvironment(currentPhaseWalls, currentPhase);
+			pc.updateStableEnvironment2(currentPhaseWalls, currentPhase);
 		} else {
 			// ... transition
 			pc.updateTransEnvironment(nextPhase, currentPhaseWalls, prevPhaseWalls, 

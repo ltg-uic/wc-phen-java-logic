@@ -1,7 +1,7 @@
 /*
  * Created Sep 20, 2011
  */
-package ltg.ps.phenomena.wallcology.model;
+package ltg.ps.phenomena.wallcology.population_calculators;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,6 +22,30 @@ import ltg.ps.phenomena.wallcology.Wallcology;
  * @author Gugo
  */
 public class DBCalculator {
+	
+	// Data array
+	private int[][] invasion_begins_walls = {
+			{64, 	45, 	24, 	18, 	5},
+			{32, 	45, 	10,		10,		3},
+			{32,	75, 	10, 	28,		6},
+			{64,	15, 	24,		6, 		5},
+			{64, 	45, 	24, 	18, 	5},
+			{32, 	45, 	10,		10,		3},
+			{32,	75, 	10, 	28,		6},
+			{64,	15, 	24,		6, 		5}
+	};
+	
+	private int[][] invasion_ends_walls = {
+			{64, 	45, 	14, 	6, 		9},
+			{32, 	45, 	7,		6,		6},
+			{32,	75, 	7, 		18,		12},
+			{64,	15, 	14,		6, 		9},
+			{64, 	45, 	14, 	6, 		9},
+			{32, 	45, 	7,		6,		6},
+			{32,	75, 	7, 		18,		12},
+			{64,	15, 	14,		6, 		9}
+	};
+	
 	
 	// Logger
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -78,6 +102,18 @@ public class DBCalculator {
 			if (currentPhase.equals(Wallcology.STABLE5_PHASE)) {
 				updateWallStable(w, 5);
 			}
+		}
+	}
+	
+	
+	public void updateStableEnvironment2(List<Wall> currentPhaseWalls, String currentPhase) {
+		for (Wall w: currentPhaseWalls) {
+			// Get "experiment" data
+			int id = Integer.parseInt(w.getId()) - 1;
+			int[] ca = invasion_begins_walls[id];
+			//int[] ca = invasion_ends_walls[id];
+			ca = addNoise(ca);
+			w.setPopulationsFromModel(ca);
 		}
 	}
 

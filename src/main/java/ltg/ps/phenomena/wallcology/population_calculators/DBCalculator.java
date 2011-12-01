@@ -110,9 +110,9 @@ public class DBCalculator {
 		for (Wall w: currentPhaseWalls) {
 			// Get "experiment" data
 			int id = Integer.parseInt(w.getId()) - 1;
-			int[] ca = invasion_begins_walls[id];
-			//int[] ca = invasion_ends_walls[id];
+			int[] ca = invasion_ends_walls[id];
 			ca = addNoise(ca);
+			//System.err.print(w.getId() + ": " + ca[0] + " " + ca[1] + " " + ca[2] + " " + ca[3] + " " + ca[4] + "\n");
 			w.setPopulationsFromModel(ca);
 		}
 	}

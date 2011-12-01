@@ -194,6 +194,7 @@ public class Wall {
 		population.put("blueBug_s2", s2);
 		population.put("blueBug_s3", s3);
 		population.put("blueBug_s4", s4);
+		//System.err.println("Blue bugs: " + s1 + " " + s2 + " " + s3 + " " + s4);
 		// Green bugs
 		s1 = 0; s2 = 0;
 		for(int i=0; i<ca[3]; i++) {

@@ -540,8 +540,17 @@ public class Wallcology extends ActivePhenomena {
 
 
 	public synchronized void editEnvironment(Wall original, Wall modified) {
-//		log.info("Change wall from " + transitionTime + " : t->" +original.getTemperature()+ " l->"+original.getLight() +" h->"+original.getHumidity());
-//		log.info("..............to " + transitionTime + " : t->" +modified.getTemperature()+ " l->"+modified.getLight() +" h->"+modified.getHumidity());
+		for(Wall w: currentPhaseWalls) {
+			if (w == original) {
+				w.setTemperature(modified.getTemperature());
+				w.setLight(modified.getLight());
+				w.setHumidity(modified.getHumidity());
+				db.save();
+				//log.info("Change wall from " + transitionTime + " : t->" +original.getTemperature()+ " l->"+original.getLight() +" h->"+original.getHumidity());
+				//log.info("..............to " + transitionTime + " : t->" +modified.getTemperature()+ " l->"+modified.getLight() +" h->"+modified.getHumidity());
+
+			}
+		}
 	}
 
 }

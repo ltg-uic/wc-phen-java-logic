@@ -14,7 +14,8 @@ import java.util.Set;
 
 import ltg.ps.api.phenomena.ActivePhenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
-import ltg.ps.phenomena.wallcology.population_calculators.DBCalculator;
+import ltg.ps.phenomena.wallcology.population_calculators.HardCodedCalculator;
+import ltg.ps.phenomena.wallcology.population_calculators.PopulationCalculator;
 import ltg.ps.phenomena.wallcology.support.WallcologyPersistence;
 
 import org.dom4j.Document;
@@ -31,23 +32,18 @@ import org.dom4j.io.XMLWriter;
  */
 public class Wallcology extends ActivePhenomena {
 
-	// Phase names constants
-	public final static String STABLE4_PHASE			= "stable4";
-	public final static String HICCUP_PHASE 			= "hiccup";
-	public final static String STABLE5_PHASE			= "stable5";
-	public final static String TRANSIT_PHASE			= "transit";
-
 	// Components
 	private WallcologyPersistence db = null;
-	private DBCalculator pc = null;
+	private PopulationCalculator pc = null;
 
-	// Simulation data
+	// Simulation
 	private List<Wall> currentPhaseWalls = null;
 	private List<Wall> prevPhaseWalls = null;
 	private List<Wall> nextPhaseWalls = null;
-	private String currentPhase = null;
-	private String prevPhase = null;
-	private String nextPhase = null;
+	private WallcologyPhase currentPhase = null;
+	private WallcologyPhase prevPhase = null;
+	private WallcologyPhase nextPhase = null;
+	// Phase trasition
 	private long totalTransitionTime = -1;
 	private long elapsedTransitionTime = -1;
 	private long startTime = -1;
@@ -57,7 +53,6 @@ public class Wallcology extends ActivePhenomena {
 	private List<Species> species = null;
 	// Other wallscopes parameters
 	private boolean editEnabled = false;
-	private long transitionTime=1200;
 
 
 	/**
@@ -69,7 +64,8 @@ public class Wallcology extends ActivePhenomena {
 		setSleepTime(60);
 		// Init components
 		db = new WallcologyPersistence(this);
-		pc = new DBCalculator();
+		//pc = new DBCalculator();
+		pc = new HardCodedCalculator();
 		// Init walls lists
 		currentPhaseWalls = new ArrayList<Wall>();
 		prevPhaseWalls = new ArrayList<Wall>();
@@ -149,11 +145,11 @@ public class Wallcology extends ActivePhenomena {
 			Element el = doc.getRootElement();
 			// Phases
 			if(el.elementTextTrim("currentPhase")!=null && !el.elementTextTrim("currentPhase").equals(""))
-				currentPhase = el.elementTextTrim("currentPhase");
+				currentPhase = WallcologyPhase.valueOf(el.elementTextTrim("currentPhase"));
 			if(el.elementTextTrim("prevPhase")!=null && !el.elementTextTrim("prevPhase").equals(""))
-				prevPhase = el.elementTextTrim("prevPhase");
+				prevPhase = WallcologyPhase.valueOf(el.elementTextTrim("prevPhase"));
 			if(el.elementTextTrim("nextPhase")!=null && !el.elementTextTrim("nextPhase").equals(""))
-				nextPhase = el.elementTextTrim("nextPhase");
+				nextPhase = WallcologyPhase.valueOf(el.elementTextTrim("nextPhase"));
 			// Times
 			if(el.elementTextTrim("startTime")!=null && !el.elementTextTrim("startTime").equals(""))
 				startTime = Long.parseLong(el.elementTextTrim("startTime"));
@@ -198,12 +194,7 @@ public class Wallcology extends ActivePhenomena {
 				}
 			}
 			// First update that loads the proper data into the walls
-			if (prevPhase==null && nextPhase==null) {
-				pc.updateStableEnvironment(currentPhaseWalls, currentPhase);
-			} else {
-				pc.updateTransEnvironment(nextPhase, currentPhaseWalls, prevPhaseWalls, 
-						nextPhaseWalls, totalTransitionTime, elapsedTransitionTime);
-			}
+			updatePopulation();
 			// Save!!!
 			db.save();
 			this.setChanged();
@@ -254,28 +245,32 @@ public class Wallcology extends ActivePhenomena {
 	protected synchronized void updatePhenomena() throws InterruptedException {
 		// Update transition time if in transition phase
 		updatePhase();
-		// Update population...
-		if (prevPhase==null && nextPhase==null) {
-			//...stable 
-			//pc.updateStableEnvironment(currentPhaseWalls, currentPhase);
-			pc.updateStableEnvironment2(currentPhaseWalls, currentPhase);
-		} else {
-			// ... transition
-			pc.updateTransEnvironment(nextPhase, currentPhaseWalls, prevPhaseWalls, 
-				nextPhaseWalls, totalTransitionTime, elapsedTransitionTime);
-		}	
+		updatePopulation();	
 		db.save();
 		this.setChanged(); 
 	}
 
 
 	private void updatePhase() {
-		if (currentPhase.equals(TRANSIT_PHASE)) {
+		if (currentPhase.equals(WallcologyPhase.TRANSIT_PHASE)) {
 			if (elapsedTransitionTime >= totalTransitionTime) {
 				completePhaseTransition();
 				return;
 			}
 			elapsedTransitionTime++;
+		}
+	}
+	
+	
+	private void updatePopulation() {
+		// Update population...
+		if (prevPhase==null && nextPhase==null) {
+			//...stable 
+			pc.updatePopulationStable(currentPhaseWalls, currentPhase);
+		} else {
+			// ... transition
+			pc.updatePopulationTransit(nextPhase, currentPhaseWalls, prevPhaseWalls, 
+					nextPhaseWalls, totalTransitionTime, elapsedTransitionTime);
 		}
 	}
 
@@ -442,7 +437,7 @@ public class Wallcology extends ActivePhenomena {
 	}
 
 
-	public String getPhase() {
+	public WallcologyPhase getPhase() {
 		return currentPhase;
 	}
 	
@@ -453,12 +448,12 @@ public class Wallcology extends ActivePhenomena {
 
 	
 
-	public synchronized void setPhase(String nextPhase, Map<String, Environment> nextWalls, long transitionLength) {
-		if(currentPhase!=Wallcology.TRANSIT_PHASE) {
+	public synchronized void setPhase(WallcologyPhase nextPhase, Map<String, Environment> nextWalls, long transitionLength) {
+		if(currentPhase!=WallcologyPhase.TRANSIT_PHASE) {
 			// Set phases
 			this.nextPhase = nextPhase;
 			prevPhase = currentPhase;
-			currentPhase = Wallcology.TRANSIT_PHASE;
+			currentPhase = WallcologyPhase.TRANSIT_PHASE;
 			// Transition times
 			totalTransitionTime = transitionLength;
 			elapsedTransitionTime = 0;
@@ -468,7 +463,7 @@ public class Wallcology extends ActivePhenomena {
 			currentPhaseWalls.clear();
 			currentPhaseWalls.addAll(nextPhaseWalls);
 			// First refresh of population
-			pc.updateTransEnvironment(nextPhase, currentPhaseWalls, prevPhaseWalls, 
+			pc.updatePopulationTransit(nextPhase, currentPhaseWalls, prevPhaseWalls, 
 					nextPhaseWalls, totalTransitionTime, elapsedTransitionTime);
 			// Save!!!
 			db.save();
@@ -477,7 +472,7 @@ public class Wallcology extends ActivePhenomena {
 			// already in progress - skip...
 			if (!nextPhase.equals(this.nextPhase))
 				return;
-			// If lenght is shorter than elapsed time - terminate transition...
+			// If length is shorter than elapsed time - terminate transition...
 			if (transitionLength < elapsedTransitionTime) {
 				completePhaseTransition();
 			} else {
@@ -533,10 +528,6 @@ public class Wallcology extends ActivePhenomena {
 		this.notifyObservers();
 	}
 	
-	
-	public synchronized void setTransitionTime(long tt) {
-		this.transitionTime = tt;
-	}
 
 
 	public synchronized void editEnvironment(Wall original, Wall modified) {

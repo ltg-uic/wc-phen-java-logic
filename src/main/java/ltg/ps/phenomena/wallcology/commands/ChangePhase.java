@@ -12,6 +12,7 @@ import ltg.ps.api.phenomena.PhenomenaCommand;
 import ltg.ps.api.phenomena.PhenomenaWindow;
 import ltg.ps.phenomena.wallcology.Environment;
 import ltg.ps.phenomena.wallcology.Wallcology;
+import ltg.ps.phenomena.wallcology.WallcologyPhase;
 
 import org.dom4j.Element;
 
@@ -22,7 +23,7 @@ import org.dom4j.Element;
  */
 public class ChangePhase extends PhenomenaCommand {
 	
-	private String nextPhase = null;
+	private WallcologyPhase nextPhase = null;
 	private long transitionLength = -1;
 	private Map<String, Environment> nextWalls = null;
 
@@ -48,7 +49,7 @@ public class ChangePhase extends PhenomenaCommand {
 	@Override
 	public void parse(Element xml) {
 		transitionLength = Long.parseLong(xml.attributeValue("transitionLength"));
-		nextPhase = xml.elementTextTrim("nextPhase");
+		nextPhase = WallcologyPhase.valueOf(xml.elementTextTrim("nextPhase"));
 		parseNextWalls(xml);
 	}
 

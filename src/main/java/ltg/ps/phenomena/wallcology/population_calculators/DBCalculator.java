@@ -10,45 +10,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ltg.ps.phenomena.wallcology.Wall;
-import ltg.ps.phenomena.wallcology.Wallcology;
+import ltg.ps.phenomena.wallcology.WallcologyPhase;
 
 /**
  * TODO Description
  *
  * @author Gugo
  */
-public class DBCalculator {
-	
-	// Data array
-	private int[][] invasion_begins_walls = {
-			{64, 	45, 	24, 	18, 	5},
-			{32, 	45, 	10,		10,		3},
-			{32,	75, 	10, 	28,		6},
-			{64,	15, 	24,		6, 		5},
-			{64, 	45, 	24, 	18, 	5},
-			{32, 	45, 	10,		10,		3},
-			{32,	75, 	10, 	28,		6},
-			{64,	15, 	24,		6, 		5}
-	};
-	
-	private int[][] invasion_ends_walls = {
-			{64, 	45, 	14, 	6, 		9},
-			{32, 	45, 	7,		6,		6},
-			{32,	75, 	7, 		18,		12},
-			{64,	15, 	14,		6, 		9},
-			{64, 	45, 	14, 	6, 		9},
-			{32, 	45, 	7,		6,		6},
-			{32,	75, 	7, 		18,		12},
-			{64,	15, 	14,		6, 		9}
-	};
-	
-	
-	// Logger
-    protected final Logger log = LoggerFactory.getLogger(this.getClass());
+public class DBCalculator extends PopulationCalculator {
 
 	// Queries
 	private static final String STM_DATA = "select dp99 FROM data where id=?";
@@ -65,8 +35,7 @@ public class DBCalculator {
 	private PreparedStatement ps_data = null;
 	private PreparedStatement ps_exp4 = null;
 	private PreparedStatement ps_exp5 = null;
-	// Popupation stuff
-	private double noisePercent = 0.04; 
+
 
 	public DBCalculator() {
 		// Setup DB
@@ -82,56 +51,46 @@ public class DBCalculator {
 			log.error("Impossible to setup DB!", e);
 		}
 	}
-	
-	
-	/**
-	 * Called whenever we are updating a stable phase
-	 */
-	public void updateStableEnvironment(List<Wall> currentPhaseWalls, String currentPhase) {
+
+
+	@Override
+	public void updatePopulationStable(List<Wall> currentPhaseWalls,
+			WallcologyPhase currentPhase) {
 		for (Wall w: currentPhaseWalls) {
 			// Stable phase with 4 creatures
-			if (currentPhase.equals(Wallcology.STABLE4_PHASE)) {
+			if (currentPhase == WallcologyPhase.STABLE_4_PHASE) {
 				updateWallStable(w, 4);
 			}
 			// Stable phase during the hiccup
-			if (currentPhase.equals(Wallcology.HICCUP_PHASE)) {
+			if (currentPhase == WallcologyPhase.HICCUP_PHASE) {
 				// Uses same function because data is coded into walls!
 				updateWallStable(w, 4);
 			}
 			// Stable phase during predator
-			if (currentPhase.equals(Wallcology.STABLE5_PHASE)) {
+			if (currentPhase == WallcologyPhase.STABLE_5_PHASE) {
 				updateWallStable(w, 5);
 			}
 		}
 	}
-	
-	
-	public void updateStableEnvironment2(List<Wall> currentPhaseWalls, String currentPhase) {
-		for (Wall w: currentPhaseWalls) {
-			// Get "experiment" data
-			int id = Integer.parseInt(w.getId()) - 1;
-			int[] ca = invasion_ends_walls[id];
-			ca = addNoise(ca);
-			//System.err.print(w.getId() + ": " + ca[0] + " " + ca[1] + " " + ca[2] + " " + ca[3] + " " + ca[4] + "\n");
-			w.setPopulationsFromModel(ca);
-		}
-	}
 
 
-	/**
-	 * Called whenever we are transiting from a phase to another
-	 */
-	public void updateTransEnvironment(String nextPhase, List<Wall> walls, List<Wall> prevPhaseWalls, List<Wall> nextPhaseWalls, long totTransTime, long elapsedTransTime) {
+
+
+	@Override
+	public void updatePopulationTransit(WallcologyPhase nextPhase,
+			List<Wall> walls, List<Wall> prevPhaseWalls,
+			List<Wall> nextPhaseWalls, long totTransTime, long elapsedTransTime) {
 		for (int i=0;i<walls.size();i++) {
-				if (totTransTime==-1 || elapsedTransTime== -1) {
-					log.error("Total and/or elapsed transition times are -1");
-				}
-				updateWallTransition(nextPhase, walls.get(i), prevPhaseWalls.get(i), nextPhaseWalls.get(i), totTransTime, elapsedTransTime);
+			if (totTransTime==-1 || elapsedTransTime== -1) {
+				log.error("Total and/or elapsed transition times are -1");
+			}
+			updateWallTransition(nextPhase, walls.get(i), prevPhaseWalls.get(i), nextPhaseWalls.get(i), totTransTime, elapsedTransTime);
 		}
+
 	}
 
 
-	
+
 	private void updateWallStable(Wall w, int wn) {
 		// Get "experiment" data
 		int[] ca = new int[5];
@@ -147,7 +106,7 @@ public class DBCalculator {
 
 
 
-	private void updateWallTransition(String nextPhase, Wall cw, Wall pw, Wall nw, long totTransTime, long elapsedTransTime) {
+	private void updateWallTransition(WallcologyPhase nextPhase, Wall cw, Wall pw, Wall nw, long totTransTime, long elapsedTransTime) {
 		// Get "experiment" data for previous wall
 		int[] pp = new int[5];
 		if(pw.getPopulation().get("fuzzPredator_s1")==0)
@@ -156,13 +115,13 @@ public class DBCalculator {
 			pp = getExperiment(pw, 5);
 		// Get "experiment" data for next wall
 		int[] np = new int[5];
-		if(nextPhase.equals(Wallcology.HICCUP_PHASE)) {
+		if(nextPhase == WallcologyPhase.HICCUP_PHASE) {
 			np = getExperiment(nw, 4);
 		}
-		if(nextPhase.equals(Wallcology.STABLE4_PHASE)) {
+		if(nextPhase == WallcologyPhase.STABLE_4_PHASE) {
 			np = getExperiment(nw, 4);
 		}
-		if(nextPhase.equals(Wallcology.STABLE5_PHASE)) {
+		if(nextPhase == WallcologyPhase.STABLE_5_PHASE) {
 			np = getExperiment(nw, 5);
 		}	
 		// Interpolate
@@ -206,39 +165,39 @@ public class DBCalculator {
 		}
 		return ca;
 	}
-	
-	
-//	private int[] getExperiment(int t, int l, int h, int cn) {
-//		ResultSet rs = null;
-//		ResultSet rs1 = null;
-//		int[] ca = new int[5];
-//		try {
-//			if(cn==4) {
-//				ps_exp4.setInt(1, t);
-//				ps_exp4.setInt(2, l);
-//				ps_exp4.setInt(3, h);
-//				rs = ps_exp4.executeQuery();
-//			} else if (cn==5) { 
-//				ps_exp5.setInt(1, t);
-//				ps_exp5.setInt(2, l);
-//				ps_exp5.setInt(3, h);
-//				rs = ps_exp5.executeQuery();
-//			}
-//			rs.next();
-//			for(int i=1; i<=5; i++) {
-//				// Get amount of each creature
-//				ps_data.setInt(1, rs.getInt(i));
-//				rs1 = ps_data.executeQuery();
-//				rs1.next();
-//				ca[i-1] = rs1.getInt("dp99");
-//			}
-//		} catch (SQLException e) {
-//			log.error("Impossible to assign value to preapred statement");
-//		}
-//		return ca;
-//	}
-	
-	
+
+
+	//	private int[] getExperiment(int t, int l, int h, int cn) {
+	//		ResultSet rs = null;
+	//		ResultSet rs1 = null;
+	//		int[] ca = new int[5];
+	//		try {
+	//			if(cn==4) {
+	//				ps_exp4.setInt(1, t);
+	//				ps_exp4.setInt(2, l);
+	//				ps_exp4.setInt(3, h);
+	//				rs = ps_exp4.executeQuery();
+	//			} else if (cn==5) { 
+	//				ps_exp5.setInt(1, t);
+	//				ps_exp5.setInt(2, l);
+	//				ps_exp5.setInt(3, h);
+	//				rs = ps_exp5.executeQuery();
+	//			}
+	//			rs.next();
+	//			for(int i=1; i<=5; i++) {
+	//				// Get amount of each creature
+	//				ps_data.setInt(1, rs.getInt(i));
+	//				rs1 = ps_data.executeQuery();
+	//				rs1.next();
+	//				ca[i-1] = rs1.getInt("dp99");
+	//			}
+	//		} catch (SQLException e) {
+	//			log.error("Impossible to assign value to preapred statement");
+	//		}
+	//		return ca;
+	//	}
+
+
 	private ResultSet execStm(PreparedStatement ps_exp4, Wall w) throws SQLException {
 		if(((int) w.getTemperature()) == Wall.HIGH_TEMP)
 			ps_exp4.setInt(1, 1);
@@ -259,22 +218,10 @@ public class DBCalculator {
 
 
 
-	
 
 
 
-	private int[] addNoise(int[] ca) {
-		// Randomize +/- noisePercent
-		double dev;
-		for(int i=0; i<5; i++) {
-			dev = Math.random()*((double)ca[i])*noisePercent;
-			if(Math.random()<.5) {
-				ca[i] = (int) Math.round((((double)ca[i]) + dev));
-			} else {
-				ca[i] = (int) Math.round((((double)ca[i]) - dev));
-			}
-		}
-		return ca;
-	}
+
+
 
 }

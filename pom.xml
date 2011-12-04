@@ -5,7 +5,7 @@
   	<groupId>ltg</groupId>
   	<artifactId>wallcology</artifactId>
   	<name>WallCology</name>
-  	<version>0.2</version>
+  	<version>0.3</version>
 
  	<dependencies>  	
  		<dependency>

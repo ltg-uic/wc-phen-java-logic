@@ -13,7 +13,7 @@ public abstract class PopulationCalculator {
 	// Logger
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     // Noise abount
- 	private final double noisePercent = 0.04; 
+ 	private final double noisePercent = 0.03; 
 	
  	
  	/**

@@ -387,7 +387,7 @@ public class Wallcology extends ActivePhenomena {
 
 	
 	public Wall getWall(String id) {
-		for(Wall w : this.currentPhaseWalls) {
+		for(Wall w : currentPhaseWalls) {
 			if(w.getId().equals(id))
 				return w;
 		}

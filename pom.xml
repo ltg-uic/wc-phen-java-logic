@@ -5,7 +5,6 @@
   	<groupId>ltg</groupId>
   	<artifactId>wallcology</artifactId>
   	<name>WallCology</name>
-  	<version>0.3</version>
 
  	<dependencies>  	
  		<dependency>
@@ -40,4 +39,5 @@
 	</build>
 
   	<description>Wallcology is a classroom simulation of population ecology. </description>
+  	<version>1.0</version>
 </project>

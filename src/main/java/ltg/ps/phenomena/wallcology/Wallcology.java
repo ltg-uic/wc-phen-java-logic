@@ -14,6 +14,9 @@ import java.util.Set;
 
 import ltg.ps.api.phenomena.ActivePhenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
+import ltg.ps.phenomena.wallcology.domain.Environment;
+import ltg.ps.phenomena.wallcology.domain.Wall;
+import ltg.ps.phenomena.wallcology.domain.WallcologyPhase;
 import ltg.ps.phenomena.wallcology.population_calculators.HardCodedCalculator;
 import ltg.ps.phenomena.wallcology.population_calculators.PopulationCalculator;
 import ltg.ps.phenomena.wallcology.support.WallcologyPersistence;
@@ -35,6 +38,9 @@ public class Wallcology extends ActivePhenomena {
 	// Components
 	private WallcologyPersistence db = null;
 	private PopulationCalculator pc = null;
+	
+	// WallScopes parameters
+	private boolean editEnabled = false;
 
 	// Simulation
 	private List<Wall> currentPhaseWalls = null;
@@ -43,16 +49,11 @@ public class Wallcology extends ActivePhenomena {
 	private WallcologyPhase currentPhase = null;
 	private WallcologyPhase prevPhase = null;
 	private WallcologyPhase nextPhase = null;
-	// Phase trasition
+	// Phase transition
 	private long totalTransitionTime = -1;
 	private long elapsedTransitionTime = -1;
 	private long startTime = -1;
-	// Unused simulation data
-	private List<Wall> microworlds = null;
-	private List<TaggedCreature> taggedbugs = null;
-	private List<Species> species = null;
-	// Other wallscopes parameters
-	private boolean editEnabled = false;
+	
 
 
 	/**
@@ -62,18 +63,13 @@ public class Wallcology extends ActivePhenomena {
 		super(instanceId);
 		// Set update time to 1 minute
 		setSleepTime(60);
-		// Init components
+		// Initialize components
 		db = new WallcologyPersistence(this);
-		//pc = new DBCalculator();
 		pc = new HardCodedCalculator();
-		// Init walls lists
+		// Initialize lists
 		currentPhaseWalls = new ArrayList<Wall>();
 		prevPhaseWalls = new ArrayList<Wall>();
 		nextPhaseWalls = new ArrayList<Wall>();
-		// Init unused data
-		microworlds = new ArrayList<Wall>();
-		taggedbugs = new ArrayList<TaggedCreature>();
-		species = new ArrayList<Species>();
 	}
 
 
@@ -84,13 +80,14 @@ public class Wallcology extends ActivePhenomena {
 	public void configureWindows(String windowsXML) {
 		// reset the windows
 		phenWindows.clear();
-		// create new windows
 		Document doc = null;
 		try {
 			doc = DocumentHelper.parseText(windowsXML);
 			@SuppressWarnings("unchecked")
 			List<Element> windows = doc.getRootElement().elements();
+			// create new windows
 			for(Element e: windows) {
+				// WallScope windows
 				if(e.attributeValue("type").equals("client")) {
 					WallcologyWindow wcwin = new WallcologyWindow(
 							e.attributeValue("id"),
@@ -100,16 +97,16 @@ public class Wallcology extends ActivePhenomena {
 							);
 					phenWindows.add(wcwin);
 				}
-				if(e.attributeValue("type").equals("micro")) {
-					phenWindows.add(new WallcologyMicroWindow(e.attributeValue("id")));
-				}
+				// Configuration utility windows
 				if(e.attributeValue("type").equals("control")) {
 					phenWindows.add(new WallcologyControlWindow(e.attributeValue("id")));
 				}
+				// Notification engine windows
 				if(e.attributeValue("type").equals("notifier")) {
 					phenWindows.add(new WallcologyNotifierWindow(e.attributeValue("id")));
 				}
 			}
+			// If successfully parsed, save
 			db.save();
 		} catch (DocumentException e) {
 			log.warn("Impossible to configure wallcology windows");
@@ -133,10 +130,6 @@ public class Wallcology extends ActivePhenomena {
 		totalTransitionTime = -1;
 		elapsedTransitionTime = -1;
 		startTime = -1;
-		//... including unused data
-		species.clear();
-		taggedbugs.clear();
-		microworlds.clear();
 		
 		// Load state from XML
 		Document doc = null;
@@ -195,7 +188,7 @@ public class Wallcology extends ActivePhenomena {
 			}
 			// First update that loads the proper data into the walls
 			updatePopulation();
-			// Save!!!
+			// If successfully parsed, save and set changed
 			db.save();
 			this.setChanged();
 		} catch (DocumentException e) {
@@ -273,6 +266,20 @@ public class Wallcology extends ActivePhenomena {
 					nextPhaseWalls, totalTransitionTime, elapsedTransitionTime);
 		}
 	}
+	
+	
+	public String toString() {
+		String str = "";
+		str += this.instanceName + "\n";
+		for(Wall wid : currentPhaseWalls) {
+			str =  str + wid.getId() + " ";
+			Set<String> keys = wid.getPopulation().keySet();
+			for(String s: keys)
+				str = str + s + ": " + wid.getPopulation().get(s) + ", ";
+					str += "\n";
+		}
+		return str;
+	}
 
 
 	public String toXML() {
@@ -289,9 +296,6 @@ public class Wallcology extends ActivePhenomena {
 					win.addAttribute("wall", ((WallcologyWindow) w).getWallId());
 				win.addAttribute("x", String.valueOf(((WallcologyWindow) w).getX()));
 				win.addAttribute("y", String.valueOf(((WallcologyWindow) w).getY()));
-			}
-			if(w instanceof WallcologyMicroWindow) {
-				win.addAttribute("type", "micro");
 			}
 			if(w instanceof WallcologyControlWindow) {
 				win.addAttribute("type", "control");
@@ -372,20 +376,6 @@ public class Wallcology extends ActivePhenomena {
 	}
 
 	
-	public String removeXMLDeclaration(Document doc) {
-		StringWriter w = new StringWriter();
-		OutputFormat f =  OutputFormat.createPrettyPrint();
-		f.setSuppressDeclaration(true);
-		XMLWriter xw = new XMLWriter(w, f);
-		try {
-			xw.write(doc);
-		} catch (IOException e1) {
-			log.error("Unable to print to a string? Really?");
-		}
-		return w.toString();
-	}
-
-	
 	public Wall getWall(String id) {
 		for(Wall w : currentPhaseWalls) {
 			if(w.getId().equals(id))
@@ -394,61 +384,46 @@ public class Wallcology extends ActivePhenomena {
 		return null;
 	}
 
+	
 	public List<Wall> getWalls() {
 		return this.currentPhaseWalls;
-	}
-
-	public List<Wall> getMicroworlds() {
-		return this.microworlds;
-	}
-
-	public synchronized void tagCreature(TaggedCreature c) {
-		taggedbugs.add(c);
-	}
-
-	public synchronized void cleartags() {
-		taggedbugs.clear();
-	}
-
-	public synchronized void startExperiment(Wall mw) {
-		if(microworlds.remove(mw))
-			microworlds.add(mw);
-		db.save();
-		notifyObservers();
-	}
-
-	public synchronized void terminateExperiment(Wall mw) {
-		microworlds.remove(mw);
-		db.save();
-		notifyObservers();
-	}
-
-	public String toString() {
-		String str = "";
-		str += this.instanceName + "\n";
-		for(Wall wid : currentPhaseWalls) {
-			str =  str + wid.getId() + " ";
-			Set<String> keys = wid.getPopulation().keySet();
-			for(String s: keys)
-				str = str + s + ": " + wid.getPopulation().get(s) + ", ";
-					str += "\n";
-		}
-		return str;
-	}
-
-
-	public WallcologyPhase getPhase() {
-		return currentPhase;
 	}
 	
 	
 	public boolean getEditEnabled() {
 		return this.editEnabled;
 	}
+	
+	
+	public synchronized void setEditEnabled(boolean value) {
+		this.editEnabled = value;
+		db.save();
+		this.setChanged();
+		this.notifyObservers();
+	}
 
 	
+	public WallcologyPhase getPhase() {
+		return currentPhase;
+	}
+	
+	
+	public synchronized void editEnvironment(Wall original, Wall modified) {
+		for(Wall w: currentPhaseWalls) {
+			if (w == original) {
+				w.setTemperature(modified.getTemperature());
+				w.setLight(modified.getLight());
+				w.setHumidity(modified.getHumidity());
+				db.save();
+				//log.info("Change wall from " + transitionTime + " : t->" +original.getTemperature()+ " l->"+original.getLight() +" h->"+original.getHumidity());
+				//log.info("..............to " + transitionTime + " : t->" +modified.getTemperature()+ " l->"+modified.getLight() +" h->"+modified.getHumidity());
 
-	public synchronized void setPhase(WallcologyPhase nextPhase, Map<String, Environment> nextWalls, long transitionLength) {
+			}
+		}
+	}
+	
+
+	public synchronized void changePhase(WallcologyPhase nextPhase, Map<String, Environment> nextWalls, long transitionLength) {
 		if(currentPhase!=WallcologyPhase.TRANSIT_PHASE) {
 			// Set phases
 			this.nextPhase = nextPhase;
@@ -521,27 +496,17 @@ public class Wallcology extends ActivePhenomena {
 	}
 	
 	
-	public synchronized void setEditEnabled(boolean value) {
-		this.editEnabled = value;
-		db.save();
-		this.setChanged();
-		this.notifyObservers();
-	}
-	
-
-
-	public synchronized void editEnvironment(Wall original, Wall modified) {
-		for(Wall w: currentPhaseWalls) {
-			if (w == original) {
-				w.setTemperature(modified.getTemperature());
-				w.setLight(modified.getLight());
-				w.setHumidity(modified.getHumidity());
-				db.save();
-				//log.info("Change wall from " + transitionTime + " : t->" +original.getTemperature()+ " l->"+original.getLight() +" h->"+original.getHumidity());
-				//log.info("..............to " + transitionTime + " : t->" +modified.getTemperature()+ " l->"+modified.getLight() +" h->"+modified.getHumidity());
-
-			}
+	private String removeXMLDeclaration(Document doc) {
+		StringWriter w = new StringWriter();
+		OutputFormat f =  OutputFormat.createPrettyPrint();
+		f.setSuppressDeclaration(true);
+		XMLWriter xw = new XMLWriter(w, f);
+		try {
+			xw.write(doc);
+		} catch (IOException e1) {
+			log.error("Unable to print to an XML string? Really?");
 		}
+		return w.toString();
 	}
 
 }

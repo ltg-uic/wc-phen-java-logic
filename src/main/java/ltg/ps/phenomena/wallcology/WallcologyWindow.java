@@ -3,13 +3,19 @@
  */
 package ltg.ps.phenomena.wallcology;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
+import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 import ltg.ps.api.phenomena.Phenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
+import ltg.ps.phenomena.wallcology.domain.Wall;
 
 /**
  * WallcologyWindow implements the abstract class PhenomenaWindow to represent the wallscope client in the simulation
@@ -61,7 +67,7 @@ public class WallcologyWindow extends PhenomenaWindow { //implements Observer
 		root.add(env);
 		root.add(pop);
 		if (wc!=null) 
-			return wc.removeXMLDeclaration(DocumentHelper.createDocument(root));
+			return removeXMLDeclaration(DocumentHelper.createDocument(root));
 		return "";	
 	}
 
@@ -76,6 +82,20 @@ public class WallcologyWindow extends PhenomenaWindow { //implements Observer
 
 	public int getY() {
 		return this.y;
+	}
+	
+	
+	private String removeXMLDeclaration(Document doc) {
+		StringWriter w = new StringWriter();
+		OutputFormat f =  OutputFormat.createPrettyPrint();
+		f.setSuppressDeclaration(true);
+		XMLWriter xw = new XMLWriter(w, f);
+		try {
+			xw.write(doc);
+		} catch (IOException e1) {
+			log.error("Unable to print to an XML string? Really?");
+		}
+		return w.toString();
 	}
 	
 }

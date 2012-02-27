@@ -1,4 +1,4 @@
-package ltg.ps.phenomena.wallcology;
+package ltg.ps.phenomena.wallcology.domain;
 
 public class TaggedCreature {
 	private String species = null;

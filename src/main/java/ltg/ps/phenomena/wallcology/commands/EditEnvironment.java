@@ -12,9 +12,9 @@ import java.util.Date;
 import ltg.ps.api.phenomena.Phenomena;
 import ltg.ps.api.phenomena.PhenomenaCommand;
 import ltg.ps.api.phenomena.PhenomenaWindow;
-import ltg.ps.phenomena.wallcology.Wall;
 import ltg.ps.phenomena.wallcology.Wallcology;
 import ltg.ps.phenomena.wallcology.WallcologyWindow;
+import ltg.ps.phenomena.wallcology.domain.Wall;
 
 import org.dom4j.Element;
 

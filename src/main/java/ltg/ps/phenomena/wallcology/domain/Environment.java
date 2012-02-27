@@ -1,7 +1,7 @@
 /*
  * Created Sep 25, 2011
  */
-package ltg.ps.phenomena.wallcology;
+package ltg.ps.phenomena.wallcology.domain;
 
 /**
  * TODO Description

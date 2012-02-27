@@ -5,8 +5,8 @@ package ltg.ps.phenomena.wallcology.population_calculators;
 
 import java.util.List;
 
-import ltg.ps.phenomena.wallcology.domain.Wall;
-import ltg.ps.phenomena.wallcology.domain.WallcologyPhase;
+import ltg.ps.phenomena.wallcology.Wall;
+import ltg.ps.phenomena.wallcology.WallcologyPhase;
 
 /**
  * This is the calculator used to test or during emergencies.

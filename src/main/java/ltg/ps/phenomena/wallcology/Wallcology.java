@@ -14,12 +14,12 @@ import java.util.Set;
 
 import ltg.ps.api.phenomena.ActivePhenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
-import ltg.ps.phenomena.wallcology.domain.Environment;
-import ltg.ps.phenomena.wallcology.domain.Wall;
-import ltg.ps.phenomena.wallcology.domain.WallcologyPhase;
 import ltg.ps.phenomena.wallcology.population_calculators.HardCodedCalculator;
 import ltg.ps.phenomena.wallcology.population_calculators.PopulationCalculator;
 import ltg.ps.phenomena.wallcology.support.WallcologyPersistence;
+import ltg.ps.phenomena.wallcology.windows.WallcologyControlWindow;
+import ltg.ps.phenomena.wallcology.windows.WallcologyNotifierWindow;
+import ltg.ps.phenomena.wallcology.windows.WallcologyWindow;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -400,6 +400,11 @@ public class Wallcology extends ActivePhenomena {
 		db.save();
 		this.setChanged();
 		this.notifyObservers();
+	}
+	
+	
+	public void setEnabledHistory(boolean value) {
+		this.db.setRecordHistory(value);
 	}
 
 	

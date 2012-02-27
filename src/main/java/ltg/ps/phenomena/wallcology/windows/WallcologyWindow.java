@@ -1,7 +1,7 @@
 /*
  * Created Jan 18, 2011
  */
-package ltg.ps.phenomena.wallcology;
+package ltg.ps.phenomena.wallcology.windows;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -15,7 +15,8 @@ import org.dom4j.io.XMLWriter;
 
 import ltg.ps.api.phenomena.Phenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
-import ltg.ps.phenomena.wallcology.domain.Wall;
+import ltg.ps.phenomena.wallcology.Wall;
+import ltg.ps.phenomena.wallcology.Wallcology;
 
 /**
  * WallcologyWindow implements the abstract class PhenomenaWindow to represent the wallscope client in the simulation

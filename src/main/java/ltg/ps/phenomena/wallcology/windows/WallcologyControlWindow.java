@@ -1,7 +1,8 @@
-package ltg.ps.phenomena.wallcology;
+package ltg.ps.phenomena.wallcology.windows;
 
 import ltg.ps.api.phenomena.Phenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
+import ltg.ps.phenomena.wallcology.Wallcology;
 
 public class WallcologyControlWindow extends PhenomenaWindow {
 	

@@ -1,4 +1,4 @@
-package ltg.ps.phenomena.wallcology;
+package ltg.ps.phenomena.wallcology.windows;
 
 import ltg.ps.api.phenomena.Phenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;

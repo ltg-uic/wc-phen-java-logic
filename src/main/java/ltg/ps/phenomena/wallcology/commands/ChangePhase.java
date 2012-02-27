@@ -10,9 +10,9 @@ import java.util.Map;
 import ltg.ps.api.phenomena.Phenomena;
 import ltg.ps.api.phenomena.PhenomenaCommand;
 import ltg.ps.api.phenomena.PhenomenaWindow;
+import ltg.ps.phenomena.wallcology.Environment;
 import ltg.ps.phenomena.wallcology.Wallcology;
-import ltg.ps.phenomena.wallcology.domain.Environment;
-import ltg.ps.phenomena.wallcology.domain.WallcologyPhase;
+import ltg.ps.phenomena.wallcology.WallcologyPhase;
 
 import org.dom4j.Element;
 

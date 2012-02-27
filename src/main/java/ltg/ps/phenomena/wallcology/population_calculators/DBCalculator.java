@@ -10,8 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import ltg.ps.phenomena.wallcology.domain.Wall;
-import ltg.ps.phenomena.wallcology.domain.WallcologyPhase;
+import ltg.ps.phenomena.wallcology.Wall;
+import ltg.ps.phenomena.wallcology.WallcologyPhase;
 
 /**
  * TODO Description

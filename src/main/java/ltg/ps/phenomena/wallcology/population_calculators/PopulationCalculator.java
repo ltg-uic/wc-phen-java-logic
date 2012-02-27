@@ -5,8 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ltg.ps.phenomena.wallcology.domain.Wall;
-import ltg.ps.phenomena.wallcology.domain.WallcologyPhase;
+import ltg.ps.phenomena.wallcology.Wall;
+import ltg.ps.phenomena.wallcology.WallcologyPhase;
 
 public abstract class PopulationCalculator {
 	

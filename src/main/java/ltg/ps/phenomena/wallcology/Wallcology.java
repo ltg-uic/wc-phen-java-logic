@@ -40,7 +40,7 @@ public class Wallcology extends ActivePhenomena {
 	private PopulationCalculator pc = null;
 	
 	// WallScopes parameters
-	private boolean editEnabled = false;
+	private boolean editEnabled = false; 
 
 	// Simulation
 	private List<Wall> currentPhaseWalls = null;
@@ -405,6 +405,16 @@ public class Wallcology extends ActivePhenomena {
 	
 	public void setEnabledHistory(boolean value) {
 		this.db.setRecordHistory(value);
+	}
+	
+	
+	public void setGetCountWallId(String wallId) {
+		for (PhenomenaWindow pw: phenWindows) 
+			if (pw instanceof WallcologyNotifierWindow) {
+				((WallcologyNotifierWindow) pw).setWallId(wallId);
+				this.setChanged();
+				this.notifyObservers();
+			}
 	}
 
 	

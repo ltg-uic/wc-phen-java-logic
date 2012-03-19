@@ -10,7 +10,6 @@ public class WallcologyControlWindow extends PhenomenaWindow {
 
 	public WallcologyControlWindow(String windowName) {
 		super(windowName);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

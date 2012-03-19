@@ -8,6 +8,7 @@ import ltg.ps.phenomena.wallcology.Wallcology;
 public class WallcologyNotifierWindow extends PhenomenaWindow {
 	
 	private String wallId = null;
+	private String reqId = null;
 	private Wall w = null;
 	
 	public WallcologyNotifierWindow(String windowName) {
@@ -16,6 +17,11 @@ public class WallcologyNotifierWindow extends PhenomenaWindow {
 	
 	public void setWallId(String w) {
 		this.wallId = w;
+	}
+	
+	public void setReqParam(String w, String r) {
+		this.wallId = w;
+		this.reqId = r;
 	}
 
 	@Override
@@ -27,7 +33,7 @@ public class WallcologyNotifierWindow extends PhenomenaWindow {
 				+ w.getPopulation().get("blueBug_s3") + w.getPopulation().get("blueBug_s4");
 		int greenbugs = w.getPopulation().get("greenBug_s1") + w.getPopulation().get("greenBug_s1");
 		int predator = w.getPopulation().get("fuzzPredator_s1") + w.getPopulation().get("fuzzPredator_s2"); 
-		xml =	"<getCount wall=\"" + wallId + "\" >" + 
+		xml =	"<getCount reqId=\"" + reqId + "\" wall=\"" + wallId + "\" >" + 
 					"<temperature>" + w.getTemperature() + "</temperature>" +
 					"<humidity>" + w.getHumidity() +"</humidity>" +
 					"<light>" + w.getLight() + "</light>" +

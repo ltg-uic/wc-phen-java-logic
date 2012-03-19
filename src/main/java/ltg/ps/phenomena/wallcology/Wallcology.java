@@ -403,23 +403,18 @@ public class Wallcology extends ActivePhenomena {
 	}
 	
 	
-	public void setEnabledHistory(boolean value) {
+	public synchronized void setEnabledHistory(boolean value) {
 		this.db.setRecordHistory(value);
 	}
 	
 	
-	public void setGetCountWallId(String wallId) {
+	public synchronized void setGetCountWallId(String wallId, String reqId) {
 		for (PhenomenaWindow pw: phenWindows) 
 			if (pw instanceof WallcologyNotifierWindow) {
-				((WallcologyNotifierWindow) pw).setWallId(wallId);
+				((WallcologyNotifierWindow) pw).setReqParam(wallId, reqId);
 				this.setChanged();
 				this.notifyObservers();
 			}
-	}
-
-	
-	public WallcologyPhase getPhase() {
-		return currentPhase;
 	}
 	
 	
@@ -435,6 +430,11 @@ public class Wallcology extends ActivePhenomena {
 
 			}
 		}
+	}
+	
+	
+	public WallcologyPhase getPhase() {
+		return currentPhase;
 	}
 	
 

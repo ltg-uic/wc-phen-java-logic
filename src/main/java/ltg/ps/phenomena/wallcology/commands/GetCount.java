@@ -18,6 +18,7 @@ import ltg.ps.phenomena.wallcology.Wallcology;
 public class GetCount extends PhenomenaCommand {
 	
 	private String wallId = null;
+	private String reqId = null;
 
 	public GetCount(Phenomena target, PhenomenaWindow origin) {
 		super(target, origin);
@@ -28,7 +29,7 @@ public class GetCount extends PhenomenaCommand {
 	 */
 	@Override
 	public void execute() {
-		((Wallcology)target).setGetCountWallId(wallId);
+		((Wallcology)target).setGetCountWallId(wallId, reqId);
 	}
 
 	/* (non-Javadoc)
@@ -37,6 +38,7 @@ public class GetCount extends PhenomenaCommand {
 	@Override
 	public void parse(Element e) {
 		wallId = e.attributeValue("wall");
+		reqId = e.attributeValue("reqId");
 	}
 
 }

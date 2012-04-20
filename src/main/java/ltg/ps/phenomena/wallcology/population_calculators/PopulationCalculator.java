@@ -12,8 +12,8 @@ public abstract class PopulationCalculator {
 	
 	// Logger
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
-    // Noise abount
- 	private final double noisePercent = 0.03; 
+    // Noise amount
+ 	public static final double noisePercent = 0.02; 
 	
  	
  	/**
@@ -49,14 +49,15 @@ public abstract class PopulationCalculator {
 	protected int[] addNoise(int[] ca) {
 		// Randomize +/- noisePercent
 		double dev;
-		for(int i=0; i<5; i++) {
-			dev = Math.random()*((double)ca[i])*noisePercent;
+		int[] ra = new int[ca.length];
+		for(int i=0; i< ca.length; i++) {
+			dev = Math.round(Math.random()*((double)ca[i])*noisePercent);
 			if(Math.random()<.5) {
-				ca[i] = (int) Math.round((((double)ca[i]) + dev));
+				ra[i] = ca[i] + (int)dev;
 			} else {
-				ca[i] = (int) Math.round((((double)ca[i]) - dev));
+				ra[i] = ca[i] - (int)dev;
 			}
 		}
-		return ca;
+		return ra;
 	}
 }

@@ -20,15 +20,11 @@ import ltg.ps.phenomena.wallcology.WallcologyPhase;
 public class HardCodedCalculator extends PopulationCalculator {
 	
 	// Data array
-	private int[][] wall_population = {
-				{45, 	32, 	24, 	18, 	5},
-				{45, 	32, 	24,		18,		3},
-				{45,	32, 	24, 	18,		6},
-				{45,	15, 	24,		4, 		5},
-				{32, 	60, 	10, 	24, 	5},
-				{32, 	60, 	10,		24,		3},
-				{32,	60, 	10, 	74,		6},
-				{32,	60, 	10,		24, 	5}
+	public static final int[][] wall_population = {
+				{64, 	45, 	28, 	18, 	0},
+				{32, 	45, 	14,		18,		0},
+				{32,	75, 	14, 	30,		0},
+				{64,	15, 	28,		 6, 	0}
 		};
 
 	

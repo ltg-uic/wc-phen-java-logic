@@ -4,6 +4,7 @@ import ltg.ps.api.phenomena.Phenomena;
 import ltg.ps.api.phenomena.PhenomenaWindow;
 import ltg.ps.phenomena.wallcology.Wall;
 import ltg.ps.phenomena.wallcology.Wallcology;
+import ltg.ps.phenomena.wallcology.population_calculators.PopulationCalculator;
 
 public class WallcologyNotifierWindow extends PhenomenaWindow {
 	
@@ -37,6 +38,7 @@ public class WallcologyNotifierWindow extends PhenomenaWindow {
 					"<temperature>" + w.getTemperature() + "</temperature>" +
 					"<humidity>" + w.getHumidity() +"</humidity>" +
 					"<light>" + w.getLight() + "</light>" +
+					"<noiseStd>" + PopulationCalculator.noisePercent + "/noiseStd>" +
 					"<greenScum>" +
 						"<amount>" + w.getPopulation().get("greenScum") + "</amount>" +
 					"</greenScum>" +

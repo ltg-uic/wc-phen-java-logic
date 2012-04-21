@@ -38,7 +38,7 @@ public class WallcologyNotifierWindow extends PhenomenaWindow {
 					"<temperature>" + w.getTemperature() + "</temperature>" +
 					"<humidity>" + w.getHumidity() +"</humidity>" +
 					"<light>" + w.getLight() + "</light>" +
-					"<noiseStd>" + PopulationCalculator.noisePercent + "/noiseStd>" +
+					"<noiseStd>" + PopulationCalculator.noisePercent + "</noiseStd>" +
 					"<greenScum>" +
 						"<amount>" + w.getPopulation().get("greenScum") + "</amount>" +
 					"</greenScum>" +

@@ -52,7 +52,8 @@ public abstract class PopulationCalculator {
 		int[] ra = new int[ca.length];
 		for(int i=0; i< ca.length; i++) {
 			dev = Math.round(Math.random()*((double)ca[i])*noisePercent);
-			if (dev < 1) dev = 1; // This makes sure that the deviation is always at least one
+			// Make sure that the deviation is always at least one for all creatures that are not 0
+			if (dev < 1 && ca[i] != 0) dev = 1; 
 			if(Math.random()<.5) {
 				ra[i] = ca[i] + (int)dev;
 			} else {
